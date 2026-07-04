@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="22" styleClass="root-pane"
+      stylesheets="@styles.css"
+      xmlns="http://javafx.com/javafx/17.0.6"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.cincuentazo.controller.StartController">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <Label text="Cincuentazo" styleClass="main-title"/>
+
+    <Label text="Selecciona cuántos jugadores artificiales enfrentarás"
+           styleClass="subtitle"/>
+
+    <ChoiceBox fx:id="machineChoiceBox" prefWidth="240"/>
+
+    <Button text="Iniciar juego"
+            onAction="#onStartGame"
+            styleClass="primary-button"/>
+
+    <Label fx:id="messageLabel" styleClass="warning-label"/>
+
+</VBox>
