@@ -4,29 +4,67 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="22" styleClass="root-pane"
+<VBox alignment="CENTER"
+      spacing="18"
+      styleClass="start-root"
       stylesheets="@styles.css"
       xmlns="http://javafx.com/javafx/17.0.6"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.cincuentazo.controller.StartController">
 
     <padding>
-        <Insets top="40" right="40" bottom="40" left="40"/>
+        <Insets top="38" right="50" bottom="38" left="50"/>
     </padding>
 
-    <Label text="Cincuentazo" styleClass="main-title"/>
+    <VBox alignment="CENTER" spacing="10" styleClass="start-card">
 
-    <Label text="Selecciona cuántos jugadores artificiales enfrentarás"
-           styleClass="subtitle"/>
+        <ImageView fitWidth="135" fitHeight="135" preserveRatio="true" styleClass="start-logo">
+            <image>
+                <Image url="@../icon.png"/>
+            </image>
+        </ImageView>
 
-    <ChoiceBox fx:id="machineChoiceBox" prefWidth="240"/>
+        <Label text="Cincuentazo" styleClass="start-title"/>
 
-    <Button text="Iniciar juego"
-            onAction="#onStartGame"
-            styleClass="primary-button"/>
+        <Label text="Juego de cartas estratégico: sobrevive sin superar 50"
+               styleClass="start-subtitle"/>
 
-    <Label fx:id="messageLabel" styleClass="warning-label"/>
+        <VBox spacing="12" styleClass="start-form">
+
+            <Label text="Tu nombre" styleClass="form-label"/>
+
+            <TextField fx:id="playerNameTextField"
+                       promptText="Escribe tu nombre"
+                       prefWidth="320"
+                       styleClass="start-input"/>
+
+            <Label text="Jugadores artificiales" styleClass="form-label"/>
+
+            <ChoiceBox fx:id="machineChoiceBox"
+                       prefWidth="320"
+                       styleClass="start-choice"/>
+
+            <HBox spacing="12" alignment="CENTER">
+                <Button text="Iniciar juego"
+                        onAction="#onStartGame"
+                        styleClass="primary-button"/>
+
+                <Button text="Instrucciones"
+                        onAction="#onShowInstructions"
+                        styleClass="secondary-button"/>
+            </HBox>
+
+            <Label fx:id="messageLabel"
+                   text=""
+                   styleClass="warning-label"/>
+        </VBox>
+
+    </VBox>
 
 </VBox>
