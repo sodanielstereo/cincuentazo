@@ -1,6 +1,9 @@
 package com.cincuentazo;
 
 import java.io.IOException;
+import java.net.URL;
+
+import com.cincuentazo.controller.GameController;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -34,10 +37,13 @@ public class App extends Application {
      * @throws IOException si no se puede cargar el archivo FXML
      */
     public static void showStartView() throws IOException {
-        FXMLLoader loader = new FXMLLoader(
-                App.class.getResource("/com/cincuentazo/view/start-view.fxml")
-        );
+        URL fxmlUrl = App.class.getResource("/com/cincuentazo/view/start-view.fxml");
 
+        if (fxmlUrl == null) {
+            throw new IOException("No se encontró start-view.fxml.");
+        }
+
+        FXMLLoader loader = new FXMLLoader(fxmlUrl);
         Scene scene = new Scene(loader.load(), 900, 600);
 
         mainStage.setTitle("Cincuentazo");
@@ -47,16 +53,45 @@ public class App extends Application {
     }
 
     /**
-     * Método temporal para validar la selección de jugadores máquina.
-     * En el PR 4 este método cargará la vista principal del juego.
+     * Muestra la pantalla principal del juego.
      *
      * @param artificialPlayers cantidad de jugadores artificiales seleccionados
      */
     public static void showGameView(int artificialPlayers) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        try {
+            URL fxmlUrl = App.class.getResource("/com/cincuentazo/view/game-view.fxml");
+
+            if (fxmlUrl == null) {
+                throw new IOException("No se encontró game-view.fxml.");
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Scene scene = new Scene(loader.load(), 1000, 680);
+
+            GameController controller = loader.getController();
+            controller.startNewGame(artificialPlayers);
+
+            mainStage.setTitle("Cincuentazo - Partida");
+            mainStage.setScene(scene);
+            mainStage.setResizable(false);
+            mainStage.show();
+
+        } catch (IOException exception) {
+            showError("Error cargando la vista del juego", exception.getMessage());
+        }
+    }
+
+    /**
+     * Muestra una alerta de error.
+     *
+     * @param title título de la alerta
+     * @param message mensaje de la alerta
+     */
+    public static void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Cincuentazo");
-        alert.setHeaderText("Configuración seleccionada");
-        alert.setContentText("Jugarás contra " + artificialPlayers + " jugador(es) artificial(es).");
+        alert.setHeaderText(title);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 
