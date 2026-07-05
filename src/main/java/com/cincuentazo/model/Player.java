@@ -3,6 +3,8 @@ package com.cincuentazo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cincuentazo.exceptions.InvalidMoveException;
+
 /**
  * Representa un jugador del juego Cincuentazo.
  */
@@ -35,7 +37,7 @@ public abstract class Player {
      */
     public void addCard(Card card) {
         if (hand.size() >= MAX_HAND_SIZE) {
-            throw new IllegalStateException("El jugador ya tiene 4 cartas en la mano.");
+            throw new InvalidMoveException("El jugador ya tiene 4 cartas en la mano.");
         }
 
         hand.add(card);
@@ -49,7 +51,7 @@ public abstract class Player {
      */
     public Card removeCardAt(int index) {
         if (index < 0 || index >= hand.size()) {
-            throw new IndexOutOfBoundsException("La posición de la carta no es válida.");
+            throw new InvalidMoveException("La posición de la carta no es válida.");
         }
 
         return hand.remove(index);
@@ -95,38 +97,18 @@ public abstract class Player {
         return new ArrayList<>(hand);
     }
 
-    /**
-     * Retorna el nombre del jugador.
-     *
-     * @return nombre
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Indica si el jugador es artificial.
-     *
-     * @return true si es artificial
-     */
     public boolean isArtificial() {
         return artificial;
     }
 
-    /**
-     * Indica si el jugador sigue activo.
-     *
-     * @return true si está activo
-     */
     public boolean isActive() {
         return active;
     }
 
-    /**
-     * Cambia el estado activo del jugador.
-     *
-     * @param active nuevo estado
-     */
     public void setActive(boolean active) {
         this.active = active;
     }

@@ -3,6 +3,8 @@ package com.cincuentazo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cincuentazo.exceptions.InvalidMoveException;
+
 /**
  * Representa la mesa del juego, incluyendo las cartas jugadas y la suma actual.
  */
@@ -38,7 +40,7 @@ public class Table {
      */
     public void playCard(Card card, int usedValue) {
         if (currentSum + usedValue > 50) {
-            throw new IllegalArgumentException("La jugada supera la suma máxima de 50.");
+            throw new InvalidMoveException("La jugada supera la suma máxima de 50.");
         }
 
         playedCards.add(card);
@@ -60,7 +62,6 @@ public class Table {
 
     /**
      * Retira todas las cartas de la mesa excepto la última.
-     * Este método se usará cuando el mazo se termine.
      *
      * @return cartas retiradas para reciclar
      */
@@ -74,20 +75,10 @@ public class Table {
         return removedCards;
     }
 
-    /**
-     * Retorna la suma actual de la mesa.
-     *
-     * @return suma actual
-     */
     public int getCurrentSum() {
         return currentSum;
     }
 
-    /**
-     * Retorna una copia de las cartas jugadas.
-     *
-     * @return cartas jugadas
-     */
     public List<Card> getPlayedCards() {
         return new ArrayList<>(playedCards);
     }

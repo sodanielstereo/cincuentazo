@@ -8,4 +8,5 @@ module com.cincuentazo {
     exports com.cincuentazo;
     exports com.cincuentazo.controller;
     exports com.cincuentazo.model;
-}
+    exports com.cincuentazo.exceptions;
+}   
