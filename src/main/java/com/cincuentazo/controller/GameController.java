@@ -46,10 +46,46 @@ public class GameController {
     private Label winnerLabel;
 
     @FXML
-    private VBox playersBox;
+    private VBox machine1Panel;
+
+    @FXML
+    private VBox machine2Panel;
+
+    @FXML
+    private VBox machine3Panel;
+
+    @FXML
+    private Label machine1TitleLabel;
+
+    @FXML
+    private Label machine2TitleLabel;
+
+    @FXML
+    private Label machine3TitleLabel;
+
+    @FXML
+    private Label machine1StatusLabel;
+
+    @FXML
+    private Label machine2StatusLabel;
+
+    @FXML
+    private Label machine3StatusLabel;
+
+    @FXML
+    private HBox machine1HandBox;
+
+    @FXML
+    private HBox machine2HandBox;
+
+    @FXML
+    private HBox machine3HandBox;
 
     @FXML
     private HBox humanHandBox;
+
+    @FXML
+    private Label humanTitleLabel;
 
     @FXML
     private Button drawButton;
@@ -63,11 +99,12 @@ public class GameController {
     /**
      * Inicia una nueva partida.
      *
+     * @param realPlayerName nombre del jugador real
      * @param artificialPlayers cantidad de jugadores artificiales
      */
-    public void startNewGame(int artificialPlayers) {
+    public void startNewGame(String realPlayerName, int artificialPlayers) {
         try {
-            game = new Game(artificialPlayers);
+            game = new Game(realPlayerName, artificialPlayers);
             artificialTurnRunning = false;
 
             refreshView();
@@ -133,8 +170,6 @@ public class GameController {
 
     /**
      * Ejecuta el turno artificial usando hilos.
-     * Si el jugador actual es artificial, espera entre 2 y 4 segundos
-     * antes de jugar una carta.
      */
     private void executeArtificialTurnsIfNeeded() {
         if (game == null || artificialTurnRunning || game.getState() == GameState.FINISHED) {
@@ -157,7 +192,6 @@ public class GameController {
 
     /**
      * Ejecuta la jugada del jugador artificial actual.
-     * Este método se ejecuta en el hilo de JavaFX después de la espera del hilo artificial.
      */
     private void executeArtificialPlay() {
         try {
@@ -184,7 +218,6 @@ public class GameController {
 
     /**
      * Ejecuta la acción de tomar carta del jugador artificial actual.
-     * Este método se ejecuta en el hilo de JavaFX después de la espera del hilo artificial.
      */
     private void executeArtificialDraw() {
         try {
@@ -210,7 +243,7 @@ public class GameController {
         }
 
         updateGeneralInfo();
-        updatePlayersBox();
+        updateArtificialPlayers();
         updateHumanHandBox();
         updateLogArea();
     }
@@ -222,8 +255,18 @@ public class GameController {
         Card topCard = game.getTable().getTopCard();
 
         tableSumLabel.setText("Suma: " + game.getTable().getCurrentSum());
-        tableCardLabel.setText("Mesa: " + (topCard == null ? "-" : topCard.toString()));
+        tableCardLabel.setText(topCard == null ? "-" : topCard.toString());
         deckSizeLabel.setText("Mazo: " + game.getDeck().size());
+
+        tableCardLabel.getStyleClass().removeAll("red-card", "black-card");
+
+        if (topCard != null) {
+            if (isRedCard(topCard)) {
+                tableCardLabel.getStyleClass().add("red-card");
+            } else {
+                tableCardLabel.getStyleClass().add("black-card");
+            }
+        }
 
         Player currentPlayer = game.getCurrentPlayer();
         currentTurnLabel.setText("Turno: " + currentPlayer.getName());
@@ -254,30 +297,62 @@ public class GameController {
     }
 
     /**
-     * Actualiza la lista visual de jugadores.
+     * Actualiza los paneles de los jugadores artificiales.
      */
-    private void updatePlayersBox() {
-        playersBox.getChildren().clear();
+    private void updateArtificialPlayers() {
+        updateArtificialPlayerPanel(1, machine1Panel, machine1TitleLabel, machine1StatusLabel, machine1HandBox);
+        updateArtificialPlayerPanel(2, machine2Panel, machine2TitleLabel, machine2StatusLabel, machine2HandBox);
+        updateArtificialPlayerPanel(3, machine3Panel, machine3TitleLabel, machine3StatusLabel, machine3HandBox);
+    }
 
-        for (Player player : game.getPlayers()) {
-            String status = player.isActive() ? "Activo" : "Eliminado";
-            String type = player.isArtificial() ? "Artificial" : "Real";
+    /**
+     * Actualiza un panel específico de jugador artificial.
+     *
+     * @param playerIndex índice del jugador en la lista del modelo
+     * @param panel panel visual
+     * @param titleLabel etiqueta de título
+     * @param statusLabel etiqueta de estado
+     * @param handBox contenedor de cartas boca abajo
+     */
+    private void updateArtificialPlayerPanel(
+            int playerIndex,
+            VBox panel,
+            Label titleLabel,
+            Label statusLabel,
+            HBox handBox
+    ) {
+        if (playerIndex >= game.getPlayers().size()) {
+            panel.setVisible(false);
+            panel.setManaged(false);
+            return;
+        }
 
-            Label playerLabel = new Label(
-                    player.getName()
-                            + "\nTipo: " + type
-                            + "\nEstado: " + status
-                            + "\nCartas: " + player.getHand().size()
-            );
+        panel.setVisible(true);
+        panel.setManaged(true);
 
-            playerLabel.setStyle(
-                    "-fx-text-fill: white;"
-                            + "-fx-padding: 8;"
-                            + "-fx-border-color: #596070;"
-                            + "-fx-border-radius: 8;"
-            );
+        Player player = game.getPlayers().get(playerIndex);
 
-            playersBox.getChildren().add(playerLabel);
+        titleLabel.setText("[ " + player.getName() + " 🤖 ]");
+        statusLabel.setText(player.isActive() ? "Activo - Cartas: " + player.getHand().size() : "Eliminado");
+
+        panel.getStyleClass().removeAll("machine-panel-current", "machine-panel-eliminated");
+
+        if (player == game.getCurrentPlayer() && player.isActive()) {
+            panel.getStyleClass().add("machine-panel-current");
+        }
+
+        if (!player.isActive()) {
+            panel.getStyleClass().add("machine-panel-eliminated");
+        }
+
+        handBox.getChildren().clear();
+
+        int cardsToShow = player.getHand().size();
+
+        for (int i = 0; i < cardsToShow; i++) {
+            Label cardBack = new Label("◆");
+            cardBack.getStyleClass().add("card-back");
+            handBox.getChildren().add(cardBack);
         }
     }
 
@@ -288,6 +363,7 @@ public class GameController {
         humanHandBox.getChildren().clear();
 
         Player realPlayer = game.getPlayers().get(0);
+        humanTitleLabel.setText("[ " + realPlayer.getName() + " ]");
         List<Card> hand = realPlayer.getHand();
 
         for (int i = 0; i < hand.size(); i++) {
@@ -297,6 +373,14 @@ public class GameController {
             int cardIndex = i;
             cardButton.setOnAction(event -> playRealPlayerCard(cardIndex));
 
+            cardButton.getStyleClass().add("card-button");
+
+            if (isRedCard(card)) {
+                cardButton.getStyleClass().add("red-card");
+            } else {
+                cardButton.getStyleClass().add("black-card");
+            }
+
             boolean canPlayNow = !artificialTurnRunning
                     && game.getState() == GameState.WAITING_REAL_PLAYER_CARD
                     && !game.getCurrentPlayer().isArtificial()
@@ -304,8 +388,6 @@ public class GameController {
                     && card.canBePlayed(game.getTable().getCurrentSum());
 
             cardButton.setDisable(!canPlayNow);
-            cardButton.setMinSize(75, 95);
-            cardButton.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
             humanHandBox.getChildren().add(cardButton);
         }
@@ -322,6 +404,17 @@ public class GameController {
         }
 
         logArea.positionCaret(logArea.getText().length());
+    }
+
+    /**
+     * Determina si una carta debe mostrarse en color rojo.
+     *
+     * @param card carta a evaluar
+     * @return true si es corazón o diamante
+     */
+    private boolean isRedCard(Card card) {
+        return card.getSuit().name().equals("HEARTS")
+                || card.getSuit().name().equals("DIAMONDS");
     }
 
     /**

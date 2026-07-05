@@ -29,13 +29,15 @@ public class Game {
     private String winnerName;
 
     /**
-     * Crea una nueva partida de Cincuentazo.
+     * Crea una nueva partida de Cincuentazo con nombre personalizado.
      *
+     * @param realPlayerName nombre del jugador real
      * @param artificialPlayers cantidad de jugadores artificiales
-     * @throws GameConfigurationException si la cantidad de jugadores artificiales no es válida
+     * @throws GameConfigurationException si la configuración del juego no es válida
      * @throws EmptyDeckException si no hay cartas suficientes para preparar el juego
      */
-    public Game(int artificialPlayers) throws GameConfigurationException, EmptyDeckException {
+    public Game(String realPlayerName, int artificialPlayers) throws GameConfigurationException, EmptyDeckException {
+        validateRealPlayerName(realPlayerName);
         validateArtificialPlayers(artificialPlayers);
 
         this.deck = new Deck();
@@ -46,24 +48,65 @@ public class Game {
         this.state = GameState.NOT_STARTED;
         this.winnerName = "";
 
-        createPlayers(artificialPlayers);
+        createPlayers(realPlayerName, artificialPlayers);
         prepareGame();
     }
 
+    /**
+     * Constructor secundario para crear una partida con nombre por defecto.
+     * Se conserva para facilitar pruebas unitarias.
+     *
+     * @param artificialPlayers cantidad de jugadores artificiales
+     * @throws GameConfigurationException si la configuración del juego no es válida
+     * @throws EmptyDeckException si no hay cartas suficientes para preparar el juego
+     */
+    public Game(int artificialPlayers) throws GameConfigurationException, EmptyDeckException {
+        this("Jugador", artificialPlayers);
+    }
+
+    /**
+     * Valida el nombre del jugador real.
+     *
+     * @param realPlayerName nombre ingresado
+     * @throws GameConfigurationException si el nombre está vacío
+     */
+    private void validateRealPlayerName(String realPlayerName) throws GameConfigurationException {
+        if (realPlayerName == null || realPlayerName.trim().isEmpty()) {
+            throw new GameConfigurationException("El nombre del jugador no puede estar vacío.");
+        }
+    }
+
+    /**
+     * Valida la cantidad de jugadores artificiales.
+     *
+     * @param artificialPlayers cantidad seleccionada
+     * @throws GameConfigurationException si la cantidad no está entre 1 y 3
+     */
     private void validateArtificialPlayers(int artificialPlayers) throws GameConfigurationException {
         if (artificialPlayers < MIN_ARTIFICIAL_PLAYERS || artificialPlayers > MAX_ARTIFICIAL_PLAYERS) {
             throw new GameConfigurationException("Debes seleccionar entre 1 y 3 jugadores artificiales.");
         }
     }
 
-    private void createPlayers(int artificialPlayers) {
-        players.add(new RealPlayer("Jugador"));
+    /**
+     * Crea el jugador real y los jugadores artificiales.
+     *
+     * @param realPlayerName nombre del jugador real
+     * @param artificialPlayers cantidad de jugadores artificiales
+     */
+    private void createPlayers(String realPlayerName, int artificialPlayers) {
+        players.add(new RealPlayer(realPlayerName.trim()));
 
         for (int i = 1; i <= artificialPlayers; i++) {
             players.add(new ArtificialPlayer("Máquina " + i, new SafeStrategy()));
         }
     }
 
+    /**
+     * Prepara la partida repartiendo cartas y colocando la carta inicial en la mesa.
+     *
+     * @throws EmptyDeckException si no hay cartas suficientes
+     */
     private void prepareGame() throws EmptyDeckException {
         for (int i = 0; i < INITIAL_HAND_SIZE; i++) {
             for (Player player : players) {
@@ -78,6 +121,11 @@ public class Game {
         prepareCurrentTurn();
     }
 
+    /**
+     * Juega una carta del jugador real.
+     *
+     * @param cardIndex índice de la carta en la mano
+     */
     public void playRealPlayerCard(int cardIndex) {
         if (state != GameState.WAITING_REAL_PLAYER_CARD) {
             throw new InvalidMoveException("No es momento de jugar una carta.");
@@ -106,6 +154,11 @@ public class Game {
         state = GameState.WAITING_REAL_PLAYER_DRAW;
     }
 
+    /**
+     * Permite que el jugador real tome una carta del mazo después de jugar.
+     *
+     * @throws EmptyDeckException si no hay cartas disponibles
+     */
     public void drawForRealPlayer() throws EmptyDeckException {
         if (state != GameState.WAITING_REAL_PLAYER_DRAW) {
             throw new InvalidMoveException("Debes jugar una carta antes de tomar del mazo.");
@@ -123,6 +176,9 @@ public class Game {
         advanceTurn();
     }
 
+    /**
+     * Ejecuta la jugada del jugador artificial actual.
+     */
     public void playCurrentArtificialCard() {
         if (state != GameState.ARTIFICIAL_PLAYER_TURN) {
             throw new InvalidMoveException("No es turno de un jugador artificial.");
@@ -156,6 +212,11 @@ public class Game {
         state = GameState.ARTIFICIAL_PLAYER_DRAW;
     }
 
+    /**
+     * Permite que el jugador artificial actual tome una carta y termine su turno.
+     *
+     * @throws EmptyDeckException si no hay cartas disponibles
+     */
     public void drawForCurrentArtificialPlayer() throws EmptyDeckException {
         if (state != GameState.ARTIFICIAL_PLAYER_DRAW) {
             throw new InvalidMoveException("El jugador artificial debe jugar antes de tomar carta.");
@@ -173,6 +234,9 @@ public class Game {
         advanceTurn();
     }
 
+    /**
+     * Avanza al siguiente jugador activo.
+     */
     private void advanceTurn() {
         if (state == GameState.FINISHED) {
             return;
@@ -186,6 +250,10 @@ public class Game {
         prepareCurrentTurn();
     }
 
+    /**
+     * Prepara el turno del jugador actual.
+     * Si el jugador no tiene cartas jugables, lo elimina.
+     */
     private void prepareCurrentTurn() {
         if (checkWinner()) {
             return;
@@ -216,6 +284,11 @@ public class Game {
         }
     }
 
+    /**
+     * Elimina un jugador y envía sus cartas al fondo del mazo.
+     *
+     * @param player jugador eliminado
+     */
     private void eliminatePlayer(Player player) {
         if (!player.isActive()) {
             return;
@@ -228,6 +301,11 @@ public class Game {
         addLog(player.getName() + " fue eliminado. Sus cartas volvieron al mazo.");
     }
 
+    /**
+     * Revisa si solo queda un jugador activo.
+     *
+     * @return true si el juego terminó
+     */
     private boolean checkWinner() {
         List<Player> activePlayers = players.stream()
                 .filter(Player::isActive)
@@ -244,6 +322,12 @@ public class Game {
         return false;
     }
 
+    /**
+     * Busca el siguiente jugador activo.
+     *
+     * @param fromIndex índice desde el cual se busca
+     * @return índice del siguiente jugador activo
+     */
     private int findNextActivePlayerIndex(int fromIndex) {
         for (int i = 1; i <= players.size(); i++) {
             int nextIndex = (fromIndex + i) % players.size();
@@ -256,6 +340,12 @@ public class Game {
         return fromIndex;
     }
 
+    /**
+     * Toma una carta del mazo. Si el mazo está vacío, recicla cartas de la mesa.
+     *
+     * @return carta tomada
+     * @throws EmptyDeckException si no hay cartas disponibles
+     */
     private Card drawCardWithRecycle() throws EmptyDeckException {
         if (deck.isEmpty()) {
             recycleTableCards();
@@ -264,6 +354,9 @@ public class Game {
         return deck.draw();
     }
 
+    /**
+     * Recicla las cartas de la mesa excepto la última jugada.
+     */
     private void recycleTableCards() {
         List<Card> recycledCards = table.removeCardsExceptTop();
 
@@ -273,6 +366,11 @@ public class Game {
         }
     }
 
+    /**
+     * Agrega un mensaje al registro del juego.
+     *
+     * @param message mensaje a registrar
+     */
     private void addLog(String message) {
         gameLog.add(message);
     }
