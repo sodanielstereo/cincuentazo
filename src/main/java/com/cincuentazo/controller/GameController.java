@@ -11,6 +11,8 @@ import com.cincuentazo.model.Card;
 import com.cincuentazo.model.Game;
 import com.cincuentazo.model.GameState;
 import com.cincuentazo.model.Player;
+import com.cincuentazo.threads.ArtificialDrawThread;
+import com.cincuentazo.threads.ArtificialPlayThread;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -56,6 +58,7 @@ public class GameController {
     private TextArea logArea;
 
     private Game game;
+    private boolean artificialTurnRunning;
 
     /**
      * Inicia una nueva partida.
@@ -65,6 +68,8 @@ public class GameController {
     public void startNewGame(int artificialPlayers) {
         try {
             game = new Game(artificialPlayers);
+            artificialTurnRunning = false;
+
             refreshView();
             executeArtificialTurnsIfNeeded();
 
@@ -78,12 +83,13 @@ public class GameController {
      */
     @FXML
     private void onDrawCard() {
-        if (game == null) {
+        if (game == null || artificialTurnRunning) {
             return;
         }
 
         try {
             game.drawForRealPlayer();
+
             refreshView();
             executeArtificialTurnsIfNeeded();
 
@@ -111,6 +117,10 @@ public class GameController {
      * @param cardIndex índice de la carta seleccionada
      */
     private void playRealPlayerCard(int cardIndex) {
+        if (game == null || artificialTurnRunning) {
+            return;
+        }
+
         try {
             game.playRealPlayerCard(cardIndex);
             refreshView();
@@ -122,41 +132,72 @@ public class GameController {
     }
 
     /**
-     * Ejecuta los turnos de jugadores artificiales hasta que vuelva el turno del jugador real
-     * o hasta que el juego termine.
-     *
-     * En este PR se ejecutan inmediatamente. En el siguiente PR se reemplazará esta parte
-     * por hilos para cumplir el tiempo de espera de 2 a 4 segundos.
+     * Ejecuta el turno artificial usando hilos.
+     * Si el jugador actual es artificial, espera entre 2 y 4 segundos
+     * antes de jugar una carta.
      */
     private void executeArtificialTurnsIfNeeded() {
-        if (game == null) {
+        if (game == null || artificialTurnRunning || game.getState() == GameState.FINISHED) {
             return;
         }
 
-        int safetyCounter = 0;
+        if (!game.getCurrentPlayer().isArtificial()) {
+            return;
+        }
 
-        while (game.getState() != GameState.FINISHED
-                && game.getCurrentPlayer().isArtificial()
-                && safetyCounter < 30) {
+        if (game.getState() == GameState.ARTIFICIAL_PLAYER_TURN) {
+            artificialTurnRunning = true;
+            refreshView();
 
-            try {
-                if (game.getState() == GameState.ARTIFICIAL_PLAYER_TURN) {
-                    game.playCurrentArtificialCard();
-                    refreshView();
-                }
+            ArtificialPlayThread playThread = new ArtificialPlayThread(this::executeArtificialPlay);
+            playThread.setDaemon(true);
+            playThread.start();
+        }
+    }
 
-                if (game.getState() == GameState.ARTIFICIAL_PLAYER_DRAW) {
-                    game.drawForCurrentArtificialPlayer();
-                    refreshView();
-                }
+    /**
+     * Ejecuta la jugada del jugador artificial actual.
+     * Este método se ejecuta en el hilo de JavaFX después de la espera del hilo artificial.
+     */
+    private void executeArtificialPlay() {
+        try {
+            game.playCurrentArtificialCard();
+            refreshView();
 
-            } catch (EmptyDeckException | InvalidMoveException exception) {
-                App.showError("Error en turno artificial", exception.getMessage());
-                refreshView();
+            if (game.getState() == GameState.ARTIFICIAL_PLAYER_DRAW) {
+                ArtificialDrawThread drawThread = new ArtificialDrawThread(this::executeArtificialDraw);
+                drawThread.setDaemon(true);
+                drawThread.start();
                 return;
             }
 
-            safetyCounter++;
+            artificialTurnRunning = false;
+            refreshView();
+            executeArtificialTurnsIfNeeded();
+
+        } catch (InvalidMoveException exception) {
+            artificialTurnRunning = false;
+            App.showError("Error en turno artificial", exception.getMessage());
+            refreshView();
+        }
+    }
+
+    /**
+     * Ejecuta la acción de tomar carta del jugador artificial actual.
+     * Este método se ejecuta en el hilo de JavaFX después de la espera del hilo artificial.
+     */
+    private void executeArtificialDraw() {
+        try {
+            game.drawForCurrentArtificialPlayer();
+
+            artificialTurnRunning = false;
+            refreshView();
+            executeArtificialTurnsIfNeeded();
+
+        } catch (EmptyDeckException | InvalidMoveException exception) {
+            artificialTurnRunning = false;
+            App.showError("Error al tomar carta", exception.getMessage());
+            refreshView();
         }
     }
 
@@ -187,7 +228,11 @@ public class GameController {
         Player currentPlayer = game.getCurrentPlayer();
         currentTurnLabel.setText("Turno: " + currentPlayer.getName());
 
-        stateLabel.setText("Estado: " + translateState(game.getState()));
+        if (artificialTurnRunning) {
+            stateLabel.setText("Estado: " + translateState(game.getState()) + "...");
+        } else {
+            stateLabel.setText("Estado: " + translateState(game.getState()));
+        }
 
         if (game.getState() == GameState.FINISHED) {
             winnerLabel.setText("Ganador: " + game.getWinnerName());
@@ -195,7 +240,17 @@ public class GameController {
             winnerLabel.setText("");
         }
 
-        drawButton.setDisable(game.getState() != GameState.WAITING_REAL_PLAYER_DRAW);
+        updateActionAvailability();
+    }
+
+    /**
+     * Habilita o deshabilita las acciones del jugador real según el estado del juego.
+     */
+    private void updateActionAvailability() {
+        drawButton.setDisable(
+                artificialTurnRunning
+                        || game.getState() != GameState.WAITING_REAL_PLAYER_DRAW
+        );
     }
 
     /**
@@ -215,7 +270,13 @@ public class GameController {
                             + "\nCartas: " + player.getHand().size()
             );
 
-            playerLabel.setStyle("-fx-text-fill: white; -fx-padding: 8; -fx-border-color: #596070; -fx-border-radius: 8;");
+            playerLabel.setStyle(
+                    "-fx-text-fill: white;"
+                            + "-fx-padding: 8;"
+                            + "-fx-border-color: #596070;"
+                            + "-fx-border-radius: 8;"
+            );
+
             playersBox.getChildren().add(playerLabel);
         }
     }
@@ -236,7 +297,8 @@ public class GameController {
             int cardIndex = i;
             cardButton.setOnAction(event -> playRealPlayerCard(cardIndex));
 
-            boolean canPlayNow = game.getState() == GameState.WAITING_REAL_PLAYER_CARD
+            boolean canPlayNow = !artificialTurnRunning
+                    && game.getState() == GameState.WAITING_REAL_PLAYER_CARD
                     && !game.getCurrentPlayer().isArtificial()
                     && realPlayer.isActive()
                     && card.canBePlayed(game.getTable().getCurrentSum());
@@ -258,6 +320,8 @@ public class GameController {
         for (String message : game.getGameLog()) {
             logArea.appendText(message + "\n");
         }
+
+        logArea.positionCaret(logArea.getText().length());
     }
 
     /**
