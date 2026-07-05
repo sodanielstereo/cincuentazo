@@ -1,6 +1,7 @@
 package com.cincuentazo;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import com.cincuentazo.controller.GameController;
@@ -9,26 +10,33 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
  * Clase principal de la aplicación Cincuentazo.
- * Se encarga de iniciar JavaFX y cargar las pantallas principales.
+ * Se encarga de iniciar JavaFX, cargar vistas y configurar el ícono de la aplicación.
  */
 public class App extends Application {
 
     private static Stage mainStage;
 
-    /**
-     * Método inicial de JavaFX.
-     *
-     * @param stage ventana principal de la aplicación
-     * @throws IOException si no se puede cargar el archivo FXML
-     */
     @Override
     public void start(Stage stage) throws IOException {
         mainStage = stage;
+        configureApplicationIcon();
         showStartView();
+    }
+
+    /**
+     * Configura el ícono de la ventana principal.
+     */
+    private static void configureApplicationIcon() {
+        InputStream iconStream = App.class.getResourceAsStream("/com/cincuentazo/icon.png");
+
+        if (iconStream != null) {
+            mainStage.getIcons().add(new Image(iconStream));
+        }
     }
 
     /**
@@ -44,7 +52,7 @@ public class App extends Application {
         }
 
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
-        Scene scene = new Scene(loader.load(), 900, 600);
+        Scene scene = new Scene(loader.load(), 1000, 680);
 
         mainStage.setTitle("Cincuentazo");
         mainStage.setScene(scene);
@@ -55,9 +63,10 @@ public class App extends Application {
     /**
      * Muestra la pantalla principal del juego.
      *
+     * @param realPlayerName nombre del jugador real
      * @param artificialPlayers cantidad de jugadores artificiales seleccionados
      */
-    public static void showGameView(int artificialPlayers) {
+    public static void showGameView(String realPlayerName, int artificialPlayers) {
         try {
             URL fxmlUrl = App.class.getResource("/com/cincuentazo/view/game-view.fxml");
 
@@ -66,10 +75,10 @@ public class App extends Application {
             }
 
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
-            Scene scene = new Scene(loader.load(), 1000, 680);
+            Scene scene = new Scene(loader.load(), 1000, 780);
 
             GameController controller = loader.getController();
-            controller.startNewGame(artificialPlayers);
+            controller.startNewGame(realPlayerName, artificialPlayers);
 
             mainStage.setTitle("Cincuentazo - Partida");
             mainStage.setScene(scene);
@@ -95,11 +104,6 @@ public class App extends Application {
         alert.showAndWait();
     }
 
-    /**
-     * Punto de entrada de la aplicación.
-     *
-     * @param args argumentos de ejecución
-     */
     public static void main(String[] args) {
         launch(args);
     }

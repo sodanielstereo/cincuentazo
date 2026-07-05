@@ -3,81 +3,212 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane styleClass="root-pane"
+<AnchorPane prefWidth="1000" prefHeight="680"
+            styleClass="casino-root"
             stylesheets="@styles.css"
             xmlns="http://javafx.com/javafx/17.0.6"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.cincuentazo.controller.GameController">
 
-    <top>
-        <VBox spacing="8">
-            <padding>
-                <Insets top="20" right="25" bottom="10" left="25"/>
-            </padding>
+    <!-- Título centrado sobre Máquina 2 -->
+    <Label text="Cincuentazo"
+           layoutX="395"
+           layoutY="20"
+           styleClass="casino-title"/>
 
-            <Label text="Cincuentazo" styleClass="main-title"/>
+    <Label fx:id="winnerLabel"
+           text=""
+           layoutX="25"
+           layoutY="60"
+           styleClass="winner-label"/>
 
-            <HBox spacing="20">
-                <Label fx:id="tableSumLabel" text="Suma: 0" styleClass="info-label"/>
-                <Label fx:id="tableCardLabel" text="Mesa: -" styleClass="info-label"/>
-                <Label fx:id="deckSizeLabel" text="Mazo: 0" styleClass="info-label"/>
-                <Label fx:id="currentTurnLabel" text="Turno: -" styleClass="info-label"/>
-            </HBox>
+    <!-- Mesa central -->
+    <StackPane layoutX="185"
+               layoutY="110"
+               prefWidth="630"
+               prefHeight="370"
+               styleClass="table-rail">
 
-            <Label fx:id="stateLabel" text="Estado: -" styleClass="subtitle"/>
-            <Label fx:id="winnerLabel" text="" styleClass="warning-label"/>
+        <AnchorPane prefWidth="600"
+                    prefHeight="340"
+                    styleClass="felt-table">
 
-            <Separator/>
-        </VBox>
-    </top>
+            <VBox layoutX="55"
+                  layoutY="80"
+                  spacing="6"
+                  styleClass="table-info-box">
 
-    <left>
-        <VBox spacing="10" prefWidth="230">
-            <padding>
-                <Insets top="10" right="15" bottom="15" left="25"/>
-            </padding>
+                <Label fx:id="tableSumLabel"
+                       text="Suma: 0"
+                       styleClass="table-info-label"/>
 
-            <Label text="Jugadores" styleClass="section-title"/>
-            <VBox fx:id="playersBox" spacing="8"/>
-        </VBox>
-    </left>
+                <Label fx:id="currentTurnLabel"
+                       text="Turno: -"
+                       styleClass="table-info-label"/>
+            </VBox>
 
-    <center>
-        <VBox spacing="12">
-            <padding>
-                <Insets top="10" right="25" bottom="15" left="15"/>
-            </padding>
+            <VBox alignment="CENTER"
+                  layoutX="255"
+                  layoutY="90"
+                  spacing="10">
 
-            <Label text="Registro del juego" styleClass="section-title"/>
+                <Label text="Carta en mesa"
+                       styleClass="small-section-title"/>
 
-            <TextArea fx:id="logArea"
-                      editable="false"
-                      wrapText="true"
-                      prefHeight="390"/>
+                <Label fx:id="tableCardLabel"
+                       text="-"
+                       styleClass="table-card"/>
+            </VBox>
 
-            <Separator/>
+            <VBox alignment="CENTER"
+                  layoutX="455"
+                  layoutY="75"
+                  spacing="8">
 
-            <Label text="Mano del jugador" styleClass="section-title"/>
+                <Label text="🂠"
+                       styleClass="deck-icon"/>
 
-            <HBox fx:id="humanHandBox" spacing="12"/>
+                <Label fx:id="deckSizeLabel"
+                       text="Mazo: 0"
+                       styleClass="deck-label"/>
+            </VBox>
 
-            <HBox spacing="12">
-                <Button fx:id="drawButton"
-                        text="Tomar carta del mazo"
-                        onAction="#onDrawCard"
-                        styleClass="primary-button"/>
+        </AnchorPane>
+    </StackPane>
 
-                <Button text="Volver al inicio"
-                        onAction="#onBackToStart"
-                        styleClass="secondary-button"/>
-            </HBox>
-        </VBox>
-    </center>
+    <!-- Máquina 1 -->
+    <VBox fx:id="machine1Panel"
+          layoutX="25"
+          layoutY="210"
+          prefWidth="170"
+          prefHeight="150"
+          spacing="8"
+          styleClass="machine-panel">
 
-</BorderPane>
+        <Label fx:id="machine1TitleLabel"
+               text="[ Máquina 1 🤖 ]"
+               styleClass="machine-title"/>
+
+        <HBox fx:id="machine1HandBox"
+              spacing="-18"
+              alignment="CENTER"/>
+
+        <Label fx:id="machine1StatusLabel"
+               text="Activo"
+               styleClass="machine-status"/>
+    </VBox>
+
+    <!-- Máquina 2 -->
+    <VBox fx:id="machine2Panel"
+          layoutX="385"
+          layoutY="70"
+          prefWidth="230"
+          prefHeight="135"
+          spacing="8"
+          styleClass="machine-panel">
+
+        <Label fx:id="machine2TitleLabel"
+               text="[ Máquina 2 🤖 ]"
+               styleClass="machine-title"/>
+
+        <HBox fx:id="machine2HandBox"
+              spacing="-15"
+              alignment="CENTER"/>
+
+        <Label fx:id="machine2StatusLabel"
+               text="Activo"
+               styleClass="machine-status"/>
+    </VBox>
+
+    <!-- Máquina 3 -->
+    <VBox fx:id="machine3Panel"
+          layoutX="805"
+          layoutY="210"
+          prefWidth="170"
+          prefHeight="150"
+          spacing="8"
+          styleClass="machine-panel">
+
+        <Label fx:id="machine3TitleLabel"
+               text="[ Máquina 3 🤖 ]"
+               styleClass="machine-title"/>
+
+        <HBox fx:id="machine3HandBox"
+              spacing="-18"
+              alignment="CENTER"/>
+
+        <Label fx:id="machine3StatusLabel"
+               text="Activo"
+               styleClass="machine-status"/>
+    </VBox>
+
+    <!-- Jugador real -->
+    <VBox fx:id="humanPanel"
+          layoutX="310"
+          layoutY="455"
+          prefWidth="380"
+          prefHeight="175"
+          spacing="10"
+          styleClass="human-panel">
+
+        <Label fx:id="humanTitleLabel"
+               text="[ Jugador real ]"
+               styleClass="human-title"/>
+
+        <HBox fx:id="humanHandBox"
+              spacing="10"
+              alignment="CENTER"/>
+
+        <HBox spacing="10"
+              alignment="CENTER">
+
+            <Button fx:id="drawButton"
+                    text="Tomar carta del mazo"
+                    onAction="#onDrawCard"
+                    styleClass="primary-button"/>
+
+            <Button text="Volver al inicio"
+                    onAction="#onBackToStart"
+                    styleClass="secondary-button"/>
+        </HBox>
+    </VBox>
+
+    <!-- Estado debajo del jugador real -->
+    <Label fx:id="stateLabel"
+           text="Estado: -"
+           layoutX="315"
+           layoutY="640"
+           prefWidth="370"
+           alignment="CENTER"
+           styleClass="state-pill"/>
+
+    <!-- Registro del juego más amplio -->
+    <VBox layoutX="705"
+          layoutY="415"
+          prefWidth="270"
+          prefHeight="220"
+          spacing="8"
+          styleClass="log-panel">
+
+        <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+        </padding>
+
+        <Label text="[ Registro del juego ]"
+               styleClass="log-title"/>
+
+        <TextArea fx:id="logArea"
+                  editable="false"
+                  wrapText="true"
+                  prefWidth="250"
+                  prefHeight="165"
+                  styleClass="log-area"/>
+    </VBox>
+
+</AnchorPane>
