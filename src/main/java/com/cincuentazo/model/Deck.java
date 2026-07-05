@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
+import com.cincuentazo.exceptions.EmptyDeckException;
+
 /**
  * Representa el mazo de cartas del juego Cincuentazo.
  */
@@ -37,7 +39,7 @@ public class Deck {
     /**
      * Baraja las cartas actuales del mazo.
      */
-    public void shuffle() {
+    private void shuffle() {
         List<Card> shuffledCards = new ArrayList<>(cards);
         Collections.shuffle(shuffledCards);
 
@@ -49,10 +51,11 @@ public class Deck {
      * Toma una carta de la parte superior del mazo.
      *
      * @return carta tomada
+     * @throws EmptyDeckException si el mazo está vacío
      */
-    public Card draw() {
+    public Card draw() throws EmptyDeckException {
         if (cards.isEmpty()) {
-            throw new IllegalStateException("No hay cartas disponibles en el mazo.");
+            throw new EmptyDeckException("No hay cartas disponibles en el mazo.");
         }
 
         return cards.removeFirst();
@@ -90,7 +93,7 @@ public class Deck {
     /**
      * Retorna la cantidad de cartas disponibles.
      *
-     * @return tamaño del mazo
+     * @return cantidad de cartas
      */
     public int size() {
         return cards.size();
