@@ -6,7 +6,7 @@ import java.util.List;
 import com.cincuentazo.exceptions.InvalidMoveException;
 
 /**
- * Representa la mesa del juego, incluyendo las cartas jugadas y la suma actual.
+ * Represents the game table, including played cards and the current sum.
  */
 public class Table {
 
@@ -14,7 +14,7 @@ public class Table {
     private int currentSum;
 
     /**
-     * Crea una mesa vacía.
+     * Creates an empty table.
      */
     public Table() {
         this.playedCards = new ArrayList<>();
@@ -22,9 +22,9 @@ public class Table {
     }
 
     /**
-     * Coloca la carta inicial en la mesa y define la suma inicial.
+     * Places the initial card on the table and sets the initial sum.
      *
-     * @param card carta inicial
+     * @param card initial card
      */
     public void placeInitialCard(Card card) {
         playedCards.clear();
@@ -33,10 +33,11 @@ public class Table {
     }
 
     /**
-     * Juega una carta sobre la mesa y actualiza la suma.
+     * Plays a card on the table and updates the sum.
      *
-     * @param card carta jugada
-     * @param usedValue valor usado de la carta
+     * @param card played card
+     * @param usedValue value applied from the card
+     * @throws InvalidMoveException if the play would exceed the maximum sum of 50
      */
     public void playCard(Card card, int usedValue) {
         if (currentSum + usedValue > 50) {
@@ -48,9 +49,9 @@ public class Table {
     }
 
     /**
-     * Retorna la carta visible en la mesa.
+     * Returns the visible card on the table.
      *
-     * @return última carta jugada
+     * @return top card played, or {@code null} if the table is empty
      */
     public Card getTopCard() {
         if (playedCards.isEmpty()) {
@@ -61,9 +62,9 @@ public class Table {
     }
 
     /**
-     * Retira todas las cartas de la mesa excepto la última.
+     * Removes all cards from the table except the top card.
      *
-     * @return cartas retiradas para reciclar
+     * @return removed cards to be recycled
      */
     public List<Card> removeCardsExceptTop() {
         List<Card> removedCards = new ArrayList<>();
@@ -75,10 +76,20 @@ public class Table {
         return removedCards;
     }
 
+    /**
+     * Returns the current table sum.
+     *
+     * @return current sum
+     */
     public int getCurrentSum() {
         return currentSum;
     }
 
+    /**
+     * Returns a copy of the cards played on the table.
+     *
+     * @return played cards
+     */
     public List<Card> getPlayedCards() {
         return new ArrayList<>(playedCards);
     }

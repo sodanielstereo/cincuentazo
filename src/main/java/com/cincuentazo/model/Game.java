@@ -10,8 +10,8 @@ import com.cincuentazo.exceptions.GameConfigurationException;
 import com.cincuentazo.exceptions.InvalidMoveException;
 
 /**
- * Clase principal del modelo del juego Cincuentazo.
- * Controla jugadores, mazo, mesa, turnos, eliminación y ganador.
+ * Main game model class for Cincuentazo.
+ * Manages players, deck, table, turns, elimination, and winner detection.
  */
 public class Game {
 
@@ -29,12 +29,12 @@ public class Game {
     private String winnerName;
 
     /**
-     * Crea una nueva partida de Cincuentazo con nombre personalizado.
+     * Creates a new Cincuentazo match with a custom player name.
      *
-     * @param realPlayerName nombre del jugador real
-     * @param artificialPlayers cantidad de jugadores artificiales
-     * @throws GameConfigurationException si la configuración del juego no es válida
-     * @throws EmptyDeckException si no hay cartas suficientes para preparar el juego
+     * @param realPlayerName name of the human player
+     * @param artificialPlayers number of artificial players
+     * @throws GameConfigurationException if the game configuration is invalid
+     * @throws EmptyDeckException if there are not enough cards to prepare the game
      */
     public Game(String realPlayerName, int artificialPlayers) throws GameConfigurationException, EmptyDeckException {
         validateRealPlayerName(realPlayerName);
@@ -53,22 +53,22 @@ public class Game {
     }
 
     /**
-     * Constructor secundario para crear una partida con nombre por defecto.
-     * Se conserva para facilitar pruebas unitarias.
+     * Secondary constructor that creates a match with a default player name.
+     * Kept to simplify unit testing.
      *
-     * @param artificialPlayers cantidad de jugadores artificiales
-     * @throws GameConfigurationException si la configuración del juego no es válida
-     * @throws EmptyDeckException si no hay cartas suficientes para preparar el juego
+     * @param artificialPlayers number of artificial players
+     * @throws GameConfigurationException if the game configuration is invalid
+     * @throws EmptyDeckException if there are not enough cards to prepare the game
      */
     public Game(int artificialPlayers) throws GameConfigurationException, EmptyDeckException {
         this("Jugador", artificialPlayers);
     }
 
     /**
-     * Valida el nombre del jugador real.
+     * Validates the human player's name.
      *
-     * @param realPlayerName nombre ingresado
-     * @throws GameConfigurationException si el nombre está vacío
+     * @param realPlayerName entered player name
+     * @throws GameConfigurationException if the name is empty
      */
     private void validateRealPlayerName(String realPlayerName) throws GameConfigurationException {
         if (realPlayerName == null || realPlayerName.trim().isEmpty()) {
@@ -77,10 +77,10 @@ public class Game {
     }
 
     /**
-     * Valida la cantidad de jugadores artificiales.
+     * Validates the number of artificial players.
      *
-     * @param artificialPlayers cantidad seleccionada
-     * @throws GameConfigurationException si la cantidad no está entre 1 y 3
+     * @param artificialPlayers selected number of artificial players
+     * @throws GameConfigurationException if the number is not between 1 and 3
      */
     private void validateArtificialPlayers(int artificialPlayers) throws GameConfigurationException {
         if (artificialPlayers < MIN_ARTIFICIAL_PLAYERS || artificialPlayers > MAX_ARTIFICIAL_PLAYERS) {
@@ -89,10 +89,10 @@ public class Game {
     }
 
     /**
-     * Crea el jugador real y los jugadores artificiales.
+     * Creates the human player and artificial players.
      *
-     * @param realPlayerName nombre del jugador real
-     * @param artificialPlayers cantidad de jugadores artificiales
+     * @param realPlayerName name of the human player
+     * @param artificialPlayers number of artificial players
      */
     private void createPlayers(String realPlayerName, int artificialPlayers) {
         players.add(new RealPlayer(realPlayerName.trim()));
@@ -103,9 +103,9 @@ public class Game {
     }
 
     /**
-     * Prepara la partida repartiendo cartas y colocando la carta inicial en la mesa.
+     * Prepares the match by dealing cards and placing the initial table card.
      *
-     * @throws EmptyDeckException si no hay cartas suficientes
+     * @throws EmptyDeckException if there are not enough cards
      */
     private void prepareGame() throws EmptyDeckException {
         for (int i = 0; i < INITIAL_HAND_SIZE; i++) {
@@ -122,9 +122,10 @@ public class Game {
     }
 
     /**
-     * Juega una carta del jugador real.
+     * Plays a card from the human player's hand.
      *
-     * @param cardIndex índice de la carta en la mano
+     * @param cardIndex index of the card in the hand
+     * @throws InvalidMoveException if the move is not allowed
      */
     public void playRealPlayerCard(int cardIndex) {
         if (state != GameState.WAITING_REAL_PLAYER_CARD) {
@@ -155,9 +156,10 @@ public class Game {
     }
 
     /**
-     * Permite que el jugador real tome una carta del mazo después de jugar.
+     * Allows the human player to draw a card from the deck after playing.
      *
-     * @throws EmptyDeckException si no hay cartas disponibles
+     * @throws EmptyDeckException if no cards are available
+     * @throws InvalidMoveException if the move is not allowed
      */
     public void drawForRealPlayer() throws EmptyDeckException {
         if (state != GameState.WAITING_REAL_PLAYER_DRAW) {
@@ -177,7 +179,9 @@ public class Game {
     }
 
     /**
-     * Ejecuta la jugada del jugador artificial actual.
+     * Executes the current artificial player's card play.
+     *
+     * @throws InvalidMoveException if the move is not allowed
      */
     public void playCurrentArtificialCard() {
         if (state != GameState.ARTIFICIAL_PLAYER_TURN) {
@@ -213,9 +217,10 @@ public class Game {
     }
 
     /**
-     * Permite que el jugador artificial actual tome una carta y termine su turno.
+     * Allows the current artificial player to draw a card and end their turn.
      *
-     * @throws EmptyDeckException si no hay cartas disponibles
+     * @throws EmptyDeckException if no cards are available
+     * @throws InvalidMoveException if the move is not allowed
      */
     public void drawForCurrentArtificialPlayer() throws EmptyDeckException {
         if (state != GameState.ARTIFICIAL_PLAYER_DRAW) {
@@ -235,7 +240,7 @@ public class Game {
     }
 
     /**
-     * Avanza al siguiente jugador activo.
+     * Advances to the next active player.
      */
     private void advanceTurn() {
         if (state == GameState.FINISHED) {
@@ -251,8 +256,8 @@ public class Game {
     }
 
     /**
-     * Prepara el turno del jugador actual.
-     * Si el jugador no tiene cartas jugables, lo elimina.
+     * Prepares the current player's turn.
+     * Eliminates the player if they have no playable cards.
      */
     private void prepareCurrentTurn() {
         if (checkWinner()) {
@@ -285,9 +290,9 @@ public class Game {
     }
 
     /**
-     * Elimina un jugador y envía sus cartas al fondo del mazo.
+     * Eliminates a player and sends their cards to the bottom of the deck.
      *
-     * @param player jugador eliminado
+     * @param player eliminated player
      */
     private void eliminatePlayer(Player player) {
         if (!player.isActive()) {
@@ -302,9 +307,9 @@ public class Game {
     }
 
     /**
-     * Revisa si solo queda un jugador activo.
+     * Checks whether only one active player remains.
      *
-     * @return true si el juego terminó
+     * @return {@code true} if the game has finished
      */
     private boolean checkWinner() {
         List<Player> activePlayers = players.stream()
@@ -323,10 +328,10 @@ public class Game {
     }
 
     /**
-     * Busca el siguiente jugador activo.
+     * Finds the next active player index.
      *
-     * @param fromIndex índice desde el cual se busca
-     * @return índice del siguiente jugador activo
+     * @param fromIndex index from which to start searching
+     * @return index of the next active player
      */
     private int findNextActivePlayerIndex(int fromIndex) {
         for (int i = 1; i <= players.size(); i++) {
@@ -341,10 +346,10 @@ public class Game {
     }
 
     /**
-     * Toma una carta del mazo. Si el mazo está vacío, recicla cartas de la mesa.
+     * Draws a card from the deck. Recycles table cards if the deck is empty.
      *
-     * @return carta tomada
-     * @throws EmptyDeckException si no hay cartas disponibles
+     * @return drawn card
+     * @throws EmptyDeckException if no cards are available
      */
     private Card drawCardWithRecycle() throws EmptyDeckException {
         if (deck.isEmpty()) {
@@ -355,7 +360,7 @@ public class Game {
     }
 
     /**
-     * Recicla las cartas de la mesa excepto la última jugada.
+     * Recycles table cards except for the top card.
      */
     private void recycleTableCards() {
         List<Card> recycledCards = table.removeCardsExceptTop();
@@ -367,42 +372,82 @@ public class Game {
     }
 
     /**
-     * Agrega un mensaje al registro del juego.
+     * Adds a message to the game log.
      *
-     * @param message mensaje a registrar
+     * @param message message to record
      */
     private void addLog(String message) {
         gameLog.add(message);
     }
 
+    /**
+     * Returns the player whose turn it is.
+     *
+     * @return current player
+     */
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
 
+    /**
+     * Returns the game table.
+     *
+     * @return table instance
+     */
     public Table getTable() {
         return table;
     }
 
+    /**
+     * Returns the game deck.
+     *
+     * @return deck instance
+     */
     public Deck getDeck() {
         return deck;
     }
 
+    /**
+     * Returns an unmodifiable list of all players.
+     *
+     * @return player list
+     */
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }
 
+    /**
+     * Returns a copy of the game event log.
+     *
+     * @return game log messages
+     */
     public List<String> getGameLog() {
         return new ArrayList<>(gameLog);
     }
 
+    /**
+     * Returns the index of the current player.
+     *
+     * @return current player index
+     */
     public int getCurrentPlayerIndex() {
         return currentPlayerIndex;
     }
 
+    /**
+     * Returns the current game state.
+     *
+     * @return game state
+     */
     public GameState getState() {
         return state;
     }
 
+    /**
+     * Returns the winner's name when the game is finished.
+     *
+     * @return winner name, or an empty string if the game is not finished
+     */
     public String getWinnerName() {
         return winnerName;
     }

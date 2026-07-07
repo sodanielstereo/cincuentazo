@@ -3,17 +3,17 @@ package com.cincuentazo.model;
 import java.util.Optional;
 
 /**
- * Representa a un jugador artificial del juego.
+ * Represents an artificial player in the game.
  */
 public class ArtificialPlayer extends Player {
 
     private final ThreadStrategy strategy;
 
     /**
-     * Crea un jugador artificial con una estrategia de juego.
+     * Creates an artificial player with a play strategy.
      *
-     * @param name nombre del jugador artificial
-     * @param strategy estrategia para escoger cartas
+     * @param name artificial player name
+     * @param strategy strategy used to choose cards
      */
     public ArtificialPlayer(String name, ThreadStrategy strategy) {
         super(name, true);
@@ -21,19 +21,19 @@ public class ArtificialPlayer extends Player {
     }
 
     /**
-     * Escoge una jugada usando la estrategia del jugador artificial.
+     * Chooses a play using the artificial player's strategy.
      *
-     * @param currentSum suma actual de la mesa
-     * @return jugada escogida, o vacío si no hay jugada posible
+     * @param currentSum current table sum
+     * @return chosen play, or empty if no play is possible
      */
     public Optional<CardPlay> choosePlay(int currentSum) {
         return strategy.choosePlay(this, currentSum);
     }
 
     /**
-     * Retorna la estrategia del jugador artificial.
+     * Returns the artificial player's strategy.
      *
-     * @return estrategia usada
+     * @return strategy in use
      */
     public ThreadStrategy getStrategy() {
         return strategy;

@@ -9,9 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 /**
- * Controlador de la pantalla inicial.
- * Permite ingresar el nombre del jugador real, seleccionar jugadores artificiales
- * y consultar las instrucciones del juego.
+ * Controller for the start screen.
+ * Allows the human player to enter a name, select artificial opponents,
+ * and view game instructions.
  */
 public class StartController {
 
@@ -25,7 +25,7 @@ public class StartController {
     private Label messageLabel;
 
     /**
-     * Inicializa los componentes de la pantalla inicial.
+     * Initializes start screen components.
      */
     @FXML
     public void initialize() {
@@ -35,7 +35,7 @@ public class StartController {
     }
 
     /**
-     * Maneja el evento del botón Iniciar juego.
+     * Handles the start game button click.
      */
     @FXML
     private void onStartGame() {
@@ -57,7 +57,7 @@ public class StartController {
     }
 
     /**
-     * Muestra las instrucciones del juego.
+     * Displays the game instructions in an information dialog.
      */
     @FXML
     private void onShowInstructions() {

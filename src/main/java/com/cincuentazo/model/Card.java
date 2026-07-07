@@ -3,7 +3,7 @@ package com.cincuentazo.model;
 import java.util.List;
 
 /**
- * Representa una carta de la baraja usada en el juego Cincuentazo.
+ * Represents a playing card used in the Cincuentazo game.
  */
 public class Card {
 
@@ -11,10 +11,10 @@ public class Card {
     private final Suit suit;
 
     /**
-     * Crea una carta con valor y palo.
+     * Creates a card with the given value and suit.
      *
-     * @param value valor de la carta
-     * @param suit palo de la carta
+     * @param value card value
+     * @param suit card suit
      */
     public Card(Value value, Suit suit) {
         this.value = value;
@@ -22,10 +22,10 @@ public class Card {
     }
 
     /**
-     * Retorna los posibles valores numéricos de la carta según las reglas del juego.
-     * El As puede valer 1 o 10.
+     * Returns the possible numeric values of the card according to game rules.
+     * The ace may be worth 1 or 10.
      *
-     * @return lista de posibles valores de la carta
+     * @return list of possible card values
      */
     public List<Integer> getPossibleValues() {
         return switch (value) {
@@ -44,10 +44,10 @@ public class Card {
     }
 
     /**
-     * Retorna el valor usado cuando la carta inicia la suma de la mesa.
-     * El As inicia con valor 1.
+     * Returns the value used when the card initializes the table sum.
+     * The ace starts with a value of 1.
      *
-     * @return valor inicial de la carta
+     * @return initial card value
      */
     public int getInitialValue() {
         if (value == Value.ACE) {
@@ -58,10 +58,10 @@ public class Card {
     }
 
     /**
-     * Verifica si la carta puede jugarse sin superar 50.
+     * Checks whether the card can be played without exceeding 50.
      *
-     * @param currentSum suma actual de la mesa
-     * @return true si la carta puede jugarse, false en caso contrario
+     * @param currentSum current table sum
+     * @return {@code true} if the card can be played, {@code false} otherwise
      */
     public boolean canBePlayed(int currentSum) {
         return getPossibleValues()
@@ -70,11 +70,12 @@ public class Card {
     }
 
     /**
-     * Obtiene el mejor valor jugable de la carta.
-     * Para el As, escoge 10 si no supera 50; de lo contrario escoge 1.
+     * Returns the best playable value for the card.
+     * For the ace, chooses 10 if it does not exceed 50; otherwise chooses 1.
      *
-     * @param currentSum suma actual de la mesa
-     * @return mejor valor posible de la carta
+     * @param currentSum current table sum
+     * @return best possible card value
+     * @throws IllegalStateException if the card cannot be played without exceeding 50
      */
     public int getBestPlayableValue(int currentSum) {
         return getPossibleValues()
@@ -85,27 +86,27 @@ public class Card {
     }
 
     /**
-     * Retorna el valor de la carta.
+     * Returns the card value.
      *
-     * @return valor de la carta
+     * @return card value
      */
     public Value getValue() {
         return value;
     }
 
     /**
-     * Retorna el palo de la carta.
+     * Returns the card suit.
      *
-     * @return palo de la carta
+     * @return card suit
      */
     public Suit getSuit() {
         return suit;
     }
 
     /**
-     * Retorna la representación visual de la carta.
+     * Returns the visual representation of the card.
      *
-     * @return texto de la carta
+     * @return card text
      */
     @Override
     public String toString() {

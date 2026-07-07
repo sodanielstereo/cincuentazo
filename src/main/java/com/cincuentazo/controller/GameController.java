@@ -22,8 +22,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * Controlador de la pantalla principal del juego.
- * Conecta la interfaz JavaFX con la lógica del modelo Game.
+ * Controller for the main game screen.
+ * Connects the JavaFX interface with the {@link Game} model.
  */
 public class GameController {
 
@@ -93,14 +93,17 @@ public class GameController {
     @FXML
     private TextArea logArea;
 
+    /** Current game instance. */
     private Game game;
+
+    /** Indicates whether an artificial player turn is currently in progress. */
     private boolean artificialTurnRunning;
 
     /**
-     * Inicia una nueva partida.
+     * Starts a new game with the given configuration.
      *
-     * @param realPlayerName nombre del jugador real
-     * @param artificialPlayers cantidad de jugadores artificiales
+     * @param realPlayerName name of the human player
+     * @param artificialPlayers number of artificial players
      */
     public void startNewGame(String realPlayerName, int artificialPlayers) {
         try {
@@ -116,7 +119,7 @@ public class GameController {
     }
 
     /**
-     * Maneja el botón de tomar carta del mazo.
+     * Handles the draw card button click for the human player.
      */
     @FXML
     private void onDrawCard() {
@@ -137,7 +140,7 @@ public class GameController {
     }
 
     /**
-     * Regresa a la pantalla inicial.
+     * Returns to the start screen.
      */
     @FXML
     private void onBackToStart() {
@@ -149,9 +152,9 @@ public class GameController {
     }
 
     /**
-     * Juega una carta del jugador real.
+     * Plays a card from the human player's hand.
      *
-     * @param cardIndex índice de la carta seleccionada
+     * @param cardIndex index of the selected card
      */
     private void playRealPlayerCard(int cardIndex) {
         if (game == null || artificialTurnRunning) {
@@ -169,7 +172,7 @@ public class GameController {
     }
 
     /**
-     * Ejecuta el turno artificial usando hilos.
+     * Executes artificial player turns using background threads when needed.
      */
     private void executeArtificialTurnsIfNeeded() {
         if (game == null || artificialTurnRunning || game.getState() == GameState.FINISHED) {
@@ -191,7 +194,7 @@ public class GameController {
     }
 
     /**
-     * Ejecuta la jugada del jugador artificial actual.
+     * Executes the current artificial player's card play.
      */
     private void executeArtificialPlay() {
         try {
@@ -217,7 +220,7 @@ public class GameController {
     }
 
     /**
-     * Ejecuta la acción de tomar carta del jugador artificial actual.
+     * Executes the current artificial player's draw action.
      */
     private void executeArtificialDraw() {
         try {
@@ -235,7 +238,7 @@ public class GameController {
     }
 
     /**
-     * Actualiza todos los elementos visibles de la interfaz.
+     * Refreshes all visible interface elements.
      */
     private void refreshView() {
         if (game == null) {
@@ -249,7 +252,7 @@ public class GameController {
     }
 
     /**
-     * Actualiza la información general del juego.
+     * Updates general game information labels.
      */
     private void updateGeneralInfo() {
         Card topCard = game.getTable().getTopCard();
@@ -287,7 +290,7 @@ public class GameController {
     }
 
     /**
-     * Habilita o deshabilita las acciones del jugador real según el estado del juego.
+     * Enables or disables human player actions based on the current game state.
      */
     private void updateActionAvailability() {
         drawButton.setDisable(
@@ -297,7 +300,7 @@ public class GameController {
     }
 
     /**
-     * Actualiza los paneles de los jugadores artificiales.
+     * Updates all artificial player panels.
      */
     private void updateArtificialPlayers() {
         updateArtificialPlayerPanel(1, machine1Panel, machine1TitleLabel, machine1StatusLabel, machine1HandBox);
@@ -306,13 +309,13 @@ public class GameController {
     }
 
     /**
-     * Actualiza un panel específico de jugador artificial.
+     * Updates a specific artificial player panel.
      *
-     * @param playerIndex índice del jugador en la lista del modelo
-     * @param panel panel visual
-     * @param titleLabel etiqueta de título
-     * @param statusLabel etiqueta de estado
-     * @param handBox contenedor de cartas boca abajo
+     * @param playerIndex index of the player in the model list
+     * @param panel visual panel container
+     * @param titleLabel title label for the player
+     * @param statusLabel status label for the player
+     * @param handBox container for face-down cards
      */
     private void updateArtificialPlayerPanel(
             int playerIndex,
@@ -357,7 +360,7 @@ public class GameController {
     }
 
     /**
-     * Actualiza las cartas visibles del jugador real.
+     * Updates the visible cards in the human player's hand.
      */
     private void updateHumanHandBox() {
         humanHandBox.getChildren().clear();
@@ -394,7 +397,7 @@ public class GameController {
     }
 
     /**
-     * Actualiza el área de registro de eventos.
+     * Updates the game event log area.
      */
     private void updateLogArea() {
         logArea.clear();
@@ -407,10 +410,10 @@ public class GameController {
     }
 
     /**
-     * Determina si una carta debe mostrarse en color rojo.
+     * Determines whether a card should be displayed in red.
      *
-     * @param card carta a evaluar
-     * @return true si es corazón o diamante
+     * @param card card to evaluate
+     * @return {@code true} if the card is a heart or diamond
      */
     private boolean isRedCard(Card card) {
         return card.getSuit().name().equals("HEARTS")
@@ -418,10 +421,10 @@ public class GameController {
     }
 
     /**
-     * Traduce el estado interno del juego a texto legible.
+     * Translates the internal game state to a user-friendly label.
      *
-     * @param state estado actual
-     * @return texto legible
+     * @param state current game state
+     * @return readable state text
      */
     private String translateState(GameState state) {
         return switch (state) {

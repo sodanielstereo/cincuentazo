@@ -3,17 +3,17 @@ package com.cincuentazo.model;
 import java.util.Optional;
 
 /**
- * Estrategia segura para el jugador artificial.
- * Escoge la carta que deja la suma más alta sin superar 50.
+ * Safe strategy for artificial players.
+ * Chooses the card that leaves the highest sum without exceeding 50.
  */
 public class SafeStrategy implements ThreadStrategy {
 
     /**
-     * Escoge la mejor carta jugable.
+     * Chooses the best playable card.
      *
-     * @param player jugador artificial
-     * @param currentSum suma actual de la mesa
-     * @return jugada escogida
+     * @param player artificial player
+     * @param currentSum current table sum
+     * @return chosen play, or empty if no play is possible
      */
     @Override
     public Optional<CardPlay> choosePlay(Player player, int currentSum) {
