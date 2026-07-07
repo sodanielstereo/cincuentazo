@@ -10,10 +10,13 @@ import org.junit.jupiter.api.Test;
 import com.cincuentazo.exceptions.EmptyDeckException;
 
 /**
- * Pruebas unitarias para la clase Deck.
+ * Unit tests for the {@link Deck} class.
  */
 class DeckTest {
 
+    /**
+     * Verifies that a new deck starts with 52 cards.
+     */
     @Test
     void newDeckStartsWithFiftyTwoCards() {
         Deck deck = new Deck();
@@ -22,6 +25,9 @@ class DeckTest {
         assertFalse(deck.isEmpty());
     }
 
+    /**
+     * Verifies that drawing a card removes one card from the deck.
+     */
     @Test
     void drawRemovesOneCardFromDeck() throws EmptyDeckException {
         Deck deck = new Deck();
@@ -32,6 +38,9 @@ class DeckTest {
         assertEquals(51, deck.size());
     }
 
+    /**
+     * Verifies that drawing all cards leaves the deck empty.
+     */
     @Test
     void drawingAllCardsLeavesDeckEmpty() throws EmptyDeckException {
         Deck deck = new Deck();
@@ -44,6 +53,9 @@ class DeckTest {
         assertEquals(0, deck.size());
     }
 
+    /**
+     * Verifies that drawing from an empty deck throws an exception.
+     */
     @Test
     void drawingFromEmptyDeckThrowsException() throws EmptyDeckException {
         Deck deck = new Deck();

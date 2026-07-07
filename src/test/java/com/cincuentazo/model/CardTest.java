@@ -6,10 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- * Pruebas unitarias para la clase Card.
+ * Unit tests for the {@link Card} class.
  */
 class CardTest {
 
+    /**
+     * Verifies that number cards from two to eight use their face value.
+     */
     @Test
     void numberCardBetweenTwoAndEightUsesItsOwnValue() {
         Card twoOfHearts = new Card(Value.TWO, Suit.HEARTS);
@@ -19,6 +22,9 @@ class CardTest {
         assertEquals(2, twoOfHearts.getBestPlayableValue(0));
     }
 
+    /**
+     * Verifies that a nine card has a value of zero.
+     */
     @Test
     void nineCardHasZeroValue() {
         Card nineOfSpades = new Card(Value.NINE, Suit.SPADES);
@@ -27,6 +33,9 @@ class CardTest {
         assertEquals(0, nineOfSpades.getBestPlayableValue(50));
     }
 
+    /**
+     * Verifies that a ten card adds ten to the table sum.
+     */
     @Test
     void tenCardAddsTen() {
         Card tenOfClubs = new Card(Value.TEN, Suit.CLUBS);
@@ -36,6 +45,9 @@ class CardTest {
         assertEquals(10, tenOfClubs.getBestPlayableValue(20));
     }
 
+    /**
+     * Verifies that face cards subtract ten from the table sum.
+     */
     @Test
     void faceCardsSubtractTen() {
         Card jackOfDiamonds = new Card(Value.JACK, Suit.DIAMONDS);
@@ -51,6 +63,9 @@ class CardTest {
         assertEquals(-10, kingOfClubs.getBestPlayableValue(10));
     }
 
+    /**
+     * Verifies that an ace uses ten when possible and one when necessary.
+     */
     @Test
     void aceUsesTenWhenPossibleAndOneWhenNecessary() {
         Card aceOfSpades = new Card(Value.ACE, Suit.SPADES);

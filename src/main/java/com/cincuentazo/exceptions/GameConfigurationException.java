@@ -1,40 +1,40 @@
 package com.cincuentazo.exceptions;
 
 /**
- * Excepción propia marcada que se lanza cuando la configuración inicial del juego no es válida.
+ * Checked exception thrown when the initial game configuration is invalid.
  */
 public class GameConfigurationException extends CincuentazoException {
 
     /**
-     * Crea una excepción de configuración sin mensaje.
+     * Creates a configuration exception without a message.
      */
     public GameConfigurationException() {
         super();
     }
 
     /**
-     * Crea una excepción de configuración con mensaje.
+     * Creates a configuration exception with a message.
      *
-     * @param message mensaje descriptivo de la excepción
+     * @param message descriptive exception message
      */
     public GameConfigurationException(String message) {
         super(message);
     }
 
     /**
-     * Crea una excepción de configuración con mensaje y causa.
+     * Creates a configuration exception with a message and cause.
      *
-     * @param message mensaje descriptivo de la excepción
-     * @param cause causa original de la excepción
+     * @param message descriptive exception message
+     * @param cause original cause of the exception
      */
     public GameConfigurationException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Crea una excepción de configuración con causa.
+     * Creates a configuration exception with a cause.
      *
-     * @param cause causa original de la excepción
+     * @param cause original cause of the exception
      */
     public GameConfigurationException(Throwable cause) {
         super(cause);

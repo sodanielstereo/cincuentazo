@@ -1,40 +1,40 @@
 package com.cincuentazo.exceptions;
 
 /**
- * Excepción propia marcada que se lanza cuando el mazo no tiene cartas disponibles.
+ * Checked exception thrown when the deck has no cards available.
  */
 public class EmptyDeckException extends CincuentazoException {
 
     /**
-     * Crea una excepción de mazo vacío sin mensaje.
+     * Creates an empty deck exception without a message.
      */
     public EmptyDeckException() {
         super();
     }
 
     /**
-     * Crea una excepción de mazo vacío con mensaje.
+     * Creates an empty deck exception with a message.
      *
-     * @param message mensaje descriptivo de la excepción
+     * @param message descriptive exception message
      */
     public EmptyDeckException(String message) {
         super(message);
     }
 
     /**
-     * Crea una excepción de mazo vacío con mensaje y causa.
+     * Creates an empty deck exception with a message and cause.
      *
-     * @param message mensaje descriptivo de la excepción
-     * @param cause causa original de la excepción
+     * @param message descriptive exception message
+     * @param cause original cause of the exception
      */
     public EmptyDeckException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Crea una excepción de mazo vacío con causa.
+     * Creates an empty deck exception with a cause.
      *
-     * @param cause causa original de la excepción
+     * @param cause original cause of the exception
      */
     public EmptyDeckException(Throwable cause) {
         super(cause);

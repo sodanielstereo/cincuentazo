@@ -12,10 +12,13 @@ import com.cincuentazo.exceptions.EmptyDeckException;
 import com.cincuentazo.exceptions.GameConfigurationException;
 
 /**
- * Pruebas unitarias para la clase Game.
+ * Unit tests for the {@link Game} class.
  */
 class GameTest {
 
+    /**
+     * Verifies that a game starts with the custom human player name.
+     */
     @Test
     void gameStartsWithCustomRealPlayerName() throws GameConfigurationException, EmptyDeckException {
         Game game = new Game("Daniel", 3);
@@ -24,6 +27,9 @@ class GameTest {
         assertEquals(4, game.getPlayers().size());
     }
 
+    /**
+     * Verifies that the game creates the correct number of players.
+     */
     @Test
     void gameCreatesCorrectAmountOfPlayers() throws GameConfigurationException, EmptyDeckException {
         Game gameWithOneMachine = new Game("Daniel", 1);
@@ -33,6 +39,9 @@ class GameTest {
         assertEquals(4, gameWithThreeMachines.getPlayers().size());
     }
 
+    /**
+     * Verifies that all players start with four cards.
+     */
     @Test
     void allPlayersStartWithFourCards() throws GameConfigurationException, EmptyDeckException {
         Game game = new Game("Daniel", 3);
@@ -42,6 +51,9 @@ class GameTest {
         }
     }
 
+    /**
+     * Verifies that the game starts with an initial table card and log entry.
+     */
     @Test
     void gameStartsWithInitialTableCardAndLog() throws GameConfigurationException, EmptyDeckException {
         Game game = new Game("Daniel", 2);
@@ -51,6 +63,9 @@ class GameTest {
         assertTrue(game.getGameLog().get(0).contains("Carta inicial"));
     }
 
+    /**
+     * Verifies that the game rejects an empty human player name.
+     */
     @Test
     void gameRejectsEmptyRealPlayerName() {
         assertThrows(GameConfigurationException.class, () -> new Game("", 1));
@@ -58,12 +73,18 @@ class GameTest {
         assertThrows(GameConfigurationException.class, () -> new Game(null, 1));
     }
 
+    /**
+     * Verifies that the game rejects an invalid number of artificial players.
+     */
     @Test
     void gameRejectsInvalidArtificialPlayerAmount() {
         assertThrows(GameConfigurationException.class, () -> new Game("Daniel", 0));
         assertThrows(GameConfigurationException.class, () -> new Game("Daniel", 4));
     }
 
+    /**
+     * Verifies that the human player can play a card and must then draw.
+     */
     @Test
     void realPlayerCanPlayAndThenMustDraw() throws GameConfigurationException, EmptyDeckException {
         Game game = new Game("Daniel", 1);
@@ -83,6 +104,13 @@ class GameTest {
         assertEquals(initialHandSize, realPlayer.getHand().size());
     }
 
+    /**
+     * Finds the index of the first playable card in a player's hand.
+     *
+     * @param game game instance
+     * @param player player to search
+     * @return index of a playable card
+     */
     private int findPlayableCardIndex(Game game, Player player) {
         for (int i = 0; i < player.getHand().size(); i++) {
             Card card = player.getHand().get(i);

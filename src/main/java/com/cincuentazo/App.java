@@ -14,13 +14,20 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
- * Clase principal de la aplicación Cincuentazo.
- * Se encarga de iniciar JavaFX, cargar vistas y configurar el ícono de la aplicación.
+ * Main application class for Cincuentazo.
+ * Starts JavaFX, loads views, and configures the application icon.
  */
 public class App extends Application {
 
+    /** Primary stage shared across all views. */
     private static Stage mainStage;
 
+    /**
+     * Initializes the application and displays the start view.
+     *
+     * @param stage primary JavaFX stage
+     * @throws IOException if the start view cannot be loaded
+     */
     @Override
     public void start(Stage stage) throws IOException {
         mainStage = stage;
@@ -29,7 +36,7 @@ public class App extends Application {
     }
 
     /**
-     * Configura el ícono de la ventana principal.
+     * Sets the window icon for the main stage.
      */
     private static void configureApplicationIcon() {
         InputStream iconStream = App.class.getResourceAsStream("/com/cincuentazo/icon.png");
@@ -40,9 +47,9 @@ public class App extends Application {
     }
 
     /**
-     * Muestra la pantalla inicial del juego.
+     * Displays the game start screen.
      *
-     * @throws IOException si no se puede cargar el archivo FXML
+     * @throws IOException if the FXML file cannot be loaded
      */
     public static void showStartView() throws IOException {
         URL fxmlUrl = App.class.getResource("/com/cincuentazo/view/start-view.fxml");
@@ -61,10 +68,10 @@ public class App extends Application {
     }
 
     /**
-     * Muestra la pantalla principal del juego.
+     * Displays the main game screen and starts a new match.
      *
-     * @param realPlayerName nombre del jugador real
-     * @param artificialPlayers cantidad de jugadores artificiales seleccionados
+     * @param realPlayerName name of the human player
+     * @param artificialPlayers number of artificial players selected
      */
     public static void showGameView(String realPlayerName, int artificialPlayers) {
         try {
@@ -91,10 +98,10 @@ public class App extends Application {
     }
 
     /**
-     * Muestra una alerta de error.
+     * Shows an error alert dialog.
      *
-     * @param title título de la alerta
-     * @param message mensaje de la alerta
+     * @param title alert title
+     * @param message alert message
      */
     public static void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -104,6 +111,11 @@ public class App extends Application {
         alert.showAndWait();
     }
 
+    /**
+     * Application entry point.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }

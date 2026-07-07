@@ -1,41 +1,41 @@
 package com.cincuentazo.exceptions;
 
 /**
- * Excepción propia base del juego Cincuentazo.
- * Representa una condición excepcional general dentro de la lógica del juego.
+ * Base checked exception for the Cincuentazo game.
+ * Represents a general exceptional condition within the game logic.
  */
 public class CincuentazoException extends Exception {
 
     /**
-     * Crea una excepción sin mensaje.
+     * Creates an exception without a message.
      */
     public CincuentazoException() {
         super();
     }
 
     /**
-     * Crea una excepción con mensaje.
+     * Creates an exception with a descriptive message.
      *
-     * @param message mensaje descriptivo de la excepción
+     * @param message descriptive exception message
      */
     public CincuentazoException(String message) {
         super(message);
     }
 
     /**
-     * Crea una excepción con mensaje y causa.
+     * Creates an exception with a message and cause.
      *
-     * @param message mensaje descriptivo de la excepción
-     * @param cause causa original de la excepción
+     * @param message descriptive exception message
+     * @param cause original cause of the exception
      */
     public CincuentazoException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Crea una excepción con causa.
+     * Creates an exception with a cause.
      *
-     * @param cause causa original de la excepción
+     * @param cause original cause of the exception
      */
     public CincuentazoException(Throwable cause) {
         super(cause);
