@@ -1,7 +1,7 @@
 package com.cincuentazo.model;
 
 /**
- * Representa una jugada realizada con una carta y el valor usado en la mesa.
+ * Represents a card play with the card played and the value applied to the table.
  */
 public class CardPlay {
 
@@ -9,10 +9,10 @@ public class CardPlay {
     private final int usedValue;
 
     /**
-     * Crea una jugada de carta.
+     * Creates a card play.
      *
-     * @param card carta jugada
-     * @param usedValue valor usado para modificar la suma de la mesa
+     * @param card played card
+     * @param usedValue value used to modify the table sum
      */
     public CardPlay(Card card, int usedValue) {
         this.card = card;
@@ -20,18 +20,18 @@ public class CardPlay {
     }
 
     /**
-     * Retorna la carta jugada.
+     * Returns the played card.
      *
-     * @return carta jugada
+     * @return played card
      */
     public Card getCard() {
         return card;
     }
 
     /**
-     * Retorna el valor usado en la jugada.
+     * Returns the value used in the play.
      *
-     * @return valor usado
+     * @return used value
      */
     public int getUsedValue() {
         return usedValue;

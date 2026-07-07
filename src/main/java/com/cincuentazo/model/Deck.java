@@ -10,14 +10,14 @@ import java.util.List;
 import com.cincuentazo.exceptions.EmptyDeckException;
 
 /**
- * Representa el mazo de cartas del juego Cincuentazo.
+ * Represents the deck of cards used in the Cincuentazo game.
  */
 public class Deck {
 
     private final Deque<Card> cards;
 
     /**
-     * Crea un mazo completo de 52 cartas y lo baraja.
+     * Creates a full 52-card deck and shuffles it.
      */
     public Deck() {
         this.cards = new ArrayDeque<>();
@@ -26,7 +26,7 @@ public class Deck {
     }
 
     /**
-     * Crea las 52 cartas de la baraja de poker.
+     * Creates all 52 cards of a standard poker deck.
      */
     private void createFullDeck() {
         for (Suit suit : Suit.values()) {
@@ -37,7 +37,7 @@ public class Deck {
     }
 
     /**
-     * Baraja las cartas actuales del mazo.
+     * Shuffles the current cards in the deck.
      */
     private void shuffle() {
         List<Card> shuffledCards = new ArrayList<>(cards);
@@ -48,10 +48,10 @@ public class Deck {
     }
 
     /**
-     * Toma una carta de la parte superior del mazo.
+     * Draws a card from the top of the deck.
      *
-     * @return carta tomada
-     * @throws EmptyDeckException si el mazo está vacío
+     * @return drawn card
+     * @throws EmptyDeckException if the deck is empty
      */
     public Card draw() throws EmptyDeckException {
         if (cards.isEmpty()) {
@@ -62,18 +62,18 @@ public class Deck {
     }
 
     /**
-     * Envía cartas al final del mazo.
+     * Sends cards to the bottom of the deck.
      *
-     * @param returnedCards cartas que se enviarán al final
+     * @param returnedCards cards to place at the bottom
      */
     public void sendToBottom(Collection<Card> returnedCards) {
         cards.addAll(returnedCards);
     }
 
     /**
-     * Baraja un grupo de cartas y las envía al final del mazo.
+     * Shuffles a group of cards and sends them to the bottom of the deck.
      *
-     * @param returnedCards cartas recicladas
+     * @param returnedCards recycled cards
      */
     public void shuffleAndSendToBottom(Collection<Card> returnedCards) {
         List<Card> shuffledCards = new ArrayList<>(returnedCards);
@@ -82,18 +82,18 @@ public class Deck {
     }
 
     /**
-     * Verifica si el mazo está vacío.
+     * Checks whether the deck is empty.
      *
-     * @return true si no hay cartas, false en caso contrario
+     * @return {@code true} if there are no cards, {@code false} otherwise
      */
     public boolean isEmpty() {
         return cards.isEmpty();
     }
 
     /**
-     * Retorna la cantidad de cartas disponibles.
+     * Returns the number of cards available in the deck.
      *
-     * @return cantidad de cartas
+     * @return number of cards
      */
     public int size() {
         return cards.size();

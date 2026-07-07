@@ -1,14 +1,14 @@
 package com.cincuentazo.model;
 
 /**
- * Representa al jugador humano del juego.
+ * Represents the human player in the game.
  */
 public class RealPlayer extends Player {
 
     /**
-     * Crea un jugador humano.
+     * Creates a human player.
      *
-     * @param name nombre del jugador
+     * @param name player name
      */
     public RealPlayer(String name) {
         super(name, false);

@@ -1,29 +1,37 @@
 package com.cincuentazo.model;
 
 /**
- * Representa los palos de una baraja de poker.
+ * Represents the suits of a standard poker deck.
  */
 public enum Suit {
+
+    /** Hearts suit. */
     HEARTS("♥"),
+
+    /** Diamonds suit. */
     DIAMONDS("♦"),
+
+    /** Clubs suit. */
     CLUBS("♣"),
+
+    /** Spades suit. */
     SPADES("♠");
 
     private final String symbol;
 
     /**
-     * Crea un palo con su símbolo visual.
+     * Creates a suit with its visual symbol.
      *
-     * @param symbol símbolo del palo
+     * @param symbol suit symbol
      */
     Suit(String symbol) {
         this.symbol = symbol;
     }
 
     /**
-     * Retorna el símbolo visual del palo.
+     * Returns the visual symbol of the suit.
      *
-     * @return símbolo del palo
+     * @return suit symbol
      */
     public String getSymbol() {
         return symbol;
