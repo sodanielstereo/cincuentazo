@@ -1,40 +1,40 @@
 package com.cincuentazo.exceptions;
 
 /**
- * Excepción propia no marcada que se lanza cuando un jugador realiza una acción inválida.
+ * Unchecked exception thrown when a player performs an invalid action.
  */
 public class InvalidMoveException extends RuntimeException {
 
     /**
-     * Crea una excepción de movimiento inválido sin mensaje.
+     * Creates an invalid move exception without a message.
      */
     public InvalidMoveException() {
         super();
     }
 
     /**
-     * Crea una excepción de movimiento inválido con mensaje.
+     * Creates an invalid move exception with a message.
      *
-     * @param message mensaje descriptivo de la excepción
+     * @param message descriptive exception message
      */
     public InvalidMoveException(String message) {
         super(message);
     }
 
     /**
-     * Crea una excepción de movimiento inválido con mensaje y causa.
+     * Creates an invalid move exception with a message and cause.
      *
-     * @param message mensaje descriptivo de la excepción
-     * @param cause causa original de la excepción
+     * @param message descriptive exception message
+     * @param cause original cause of the exception
      */
     public InvalidMoveException(String message, Throwable cause) {
         super(message, cause);
     }
 
     /**
-     * Crea una excepción de movimiento inválido con causa.
+     * Creates an invalid move exception with a cause.
      *
-     * @param cause causa original de la excepción
+     * @param cause original cause of the exception
      */
     public InvalidMoveException(Throwable cause) {
         super(cause);

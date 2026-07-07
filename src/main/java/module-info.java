@@ -1,3 +1,6 @@
+/**
+ * Module descriptor for the Cincuentazo card game application.
+ */
 module com.cincuentazo {
     requires javafx.controls;
     requires javafx.fxml;
@@ -10,4 +13,4 @@ module com.cincuentazo {
     exports com.cincuentazo.model;
     exports com.cincuentazo.exceptions;
     exports com.cincuentazo.threads;
-}   
+}
